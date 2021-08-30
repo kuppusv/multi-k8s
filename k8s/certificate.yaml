@@ -1,0 +1,13 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: kube.venkatk.name-tls
+spec:
+  secretName: kube.venkatk.name
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: kube.venkatk.name
+  dnsNames:
+    - kube.venkatk.name
+    - www.venkatk.name
