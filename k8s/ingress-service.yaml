@@ -6,12 +6,43 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: 'nginx'
     nginx.ingress.kubernetes.io/use-regex: 'true'
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
     # ADD ANNOTATION
     nginx.ingress.kubernetes.io/rewrite-target: /$1
     # UPDATE ANNOTATION
 spec:
+  tls:
+    - hosts:
+        - kube.venkatk.name
+        - www.venkatk.name
+      secretName: kube.venkatk.name
   rules:
-    - http:
+    - host: kube.venkatk.name
+      http:
+        paths:
+          - path: /?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: client-cluster-ip-service
+                port:
+                  number: 3000
+          - path: /api/?(.*)
+            # UPDATE PATH
+            pathType: Prefix
+            # ADD PATHTYPE
+            backend:
+              service:
+                # UPDATE SERVICE FIELDS
+                name: server-cluster-ip-service
+                port:
+                  number: 5000
+    - host: www.venkatk.name
+      http:
         paths:
           - path: /?(.*)
             # UPDATE PATH
